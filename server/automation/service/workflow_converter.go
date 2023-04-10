@@ -200,7 +200,7 @@ func (svc workflowConverter) workflowStepDefConv(g *wfexec.Graph, def *types.Wor
 			return svc.convDelayStep(s)
 
 		case types.WorkflowStepKindErrHandler:
-			return svc.convErrorHandlerStep(g, out)
+			return svc.convErrorHandlerStep(g, s, out)
 
 		case types.WorkflowStepKindBreak:
 			return svc.convBreakStep()
@@ -299,13 +299,13 @@ func (svc workflowConverter) convGateway(g *wfexec.Graph, s *types.WorkflowStep,
 	return nil, errors.Internal("unexpected workflow configuration")
 }
 
-func (svc workflowConverter) convErrorHandlerStep(g *wfexec.Graph, out []*types.WorkflowPath) (wfexec.Step, error) {
+func (svc workflowConverter) convErrorHandlerStep(g *wfexec.Graph, s *types.WorkflowStep, out []*types.WorkflowPath) (wfexec.Step, error) {
 	switch len(out) {
 	case 0:
 		return nil, fmt.Errorf("expecting at least one path out of error handling step")
 	case 1:
 		// remove error handler
-		return types.ErrorHandlerStep(nil), nil
+		return types.ErrorHandlerStep(nil, nil), nil
 	case 2:
 		errorHandler := g.StepByID(out[1].ChildID)
 		if errorHandler == nil {
@@ -313,7 +313,16 @@ func (svc workflowConverter) convErrorHandlerStep(g *wfexec.Graph, out []*types.
 			return nil, nil
 		}
 
-		return types.ErrorHandlerStep(errorHandler), nil
+		var (
+			ss  types.ParamSet
+			err error
+		)
+		err = ss.VerifyResults(s.Results)
+		if err != nil {
+			return nil, err
+		}
+
+		return types.ErrorHandlerStep(errorHandler, s.Results), nil
 
 	default:
 		// this might be extended in the future to allow different paths using expression
@@ -671,9 +680,9 @@ func verifyStep(s *types.WorkflowStep, in, out types.WorkflowPathSet) types.Work
 		// check if reference is set on the step
 		numericRef = func() error {
 			// @todo SUBWF enable this back
-			//if 0 == cast.ToUint64(s.Ref) {
+			// if 0 == cast.ToUint64(s.Ref) {
 			//	return errors.Internal("%s step expects workflow reference ID", s.Kind)
-			//}
+			// }
 
 			return nil
 		}
@@ -751,7 +760,6 @@ func verifyStep(s *types.WorkflowStep, in, out types.WorkflowPathSet) types.Work
 		checks = append(checks,
 			noRef,
 			zero(arguments),
-			zero(results),
 			count(1, 2, outbound),
 		)
 
