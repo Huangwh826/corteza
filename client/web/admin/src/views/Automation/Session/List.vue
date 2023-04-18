@@ -26,15 +26,6 @@
       hide-search
     >
       <template #header>
-        <c-resource-list-status-filter
-          v-model="filter.completed"
-          :label="$t('filterForm.inProgress.label')"
-          :excluded-label="$t('filterForm.excluded.label')"
-          :inclusive-label="$t('filterForm.inclusive.label')"
-          :exclusive-label="$t('filterForm.exclusive.label')"
-          @change="filterList"
-        />
-
         <b-form-radio-group
           v-model="filter.status"
           :options="statusOptions"
@@ -90,8 +81,8 @@ export default {
       editRoute: 'automation.session.edit',
 
       filter: {
-        status: undefined,
         completed: 1,
+        status: 4,
       },
 
       sorting: {
@@ -134,7 +125,6 @@ export default {
   computed: {
     statusOptions () {
       return [
-        { value: undefined, text: this.$t('filterForm.all.label') },
         { value: 0, text: this.$t('filterForm.started.label') },
         { value: 1, text: this.$t('filterForm.prompted.label') },
         { value: 2, text: this.$t('filterForm.suspended.label') },
