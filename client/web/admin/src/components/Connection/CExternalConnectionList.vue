@@ -30,8 +30,10 @@
         prevPagination: $t('admin:general.pagination.prev'),
         nextPagination: $t('admin:general.pagination.next'),
       }"
+      clickable
       hide-search
       class="h-100"
+      @row-clicked="handleRowClicked"
     >
       <template #header>
         <b-button
@@ -51,18 +53,6 @@
           class="mt-2"
           @change="filterList"
         />
-      </template>
-
-      <template #actions="{ item }">
-        <b-button
-          size="sm"
-          variant="link"
-          :to="{ name: editRoute, params: { [primaryKey]: item[primaryKey] } }"
-        >
-          <font-awesome-icon
-            :icon="['fas', 'pen']"
-          />
-        </b-button>
       </template>
     </c-resource-list>
   </b-card>
@@ -126,11 +116,6 @@ export default {
           key: 'createdAt',
           sortable: false,
           formatter: (v) => moment(v).fromNow(),
-        },
-        {
-          key: 'actions',
-          label: '',
-          class: 'text-right',
         },
       ].map(c => ({
         // Generate column label translation key

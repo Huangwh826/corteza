@@ -32,7 +32,9 @@
         nextPagination: $t('admin:general.pagination.next'),
       }"
       class="h-100"
+      clickable
       @search="filterList"
+      @row-clicked="handleRowClicked"
     >
       <template #header>
         <b-button
@@ -87,18 +89,6 @@
           class="mt-3"
           @change="filterList"
         />
-      </template>
-
-      <template #actions="{ item }">
-        <b-button
-          size="sm"
-          variant="link"
-          :to="{ name: editRoute, params: { [primaryKey]: item[primaryKey] } }"
-        >
-          <font-awesome-icon
-            :icon="['fas', 'pen']"
-          />
-        </b-button>
       </template>
     </c-resource-list>
   </b-card>
@@ -157,11 +147,6 @@ export default {
           key: 'createdAt',
           sortable: true,
           formatter: (v) => moment(v).fromNow(),
-        },
-        {
-          key: 'actions',
-          label: '',
-          tdClass: 'text-right',
         },
       ].map(c => ({
         ...c,

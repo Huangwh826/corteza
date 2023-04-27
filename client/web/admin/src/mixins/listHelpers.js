@@ -197,5 +197,9 @@ export default {
     genericRowClass (item) {
       return { 'text-secondary': item && !!item.deletedAt }
     },
+
+    handleRowClicked (item) {
+      this.$router.push({ name: this.editRoute, params: { [this.primaryKey]: item[this.primaryKey] } })
+    },
   },
 }

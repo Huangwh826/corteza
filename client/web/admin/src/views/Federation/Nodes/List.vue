@@ -23,6 +23,8 @@
       </b-button>
     </c-content-header>
 
+    <!-- Add three dots here -->
+
     <c-resource-list
       :primary-key="primaryKey"
       :fields="fields"
@@ -40,9 +42,11 @@
         prevPagination: $t('admin:general.pagination.prev'),
         nextPagination: $t('admin:general.pagination.next'),
       }"
+      clickable
       sticky-header
       hide-total
       class="custom-resource-list-height"
+      @row-clicked="handleRowClicked"
       @search="filterList"
     >
       <template #actions="{ item }">
@@ -56,16 +60,6 @@
           <font-awesome-icon
             :icon="['fas', 'exclamation-triangle']"
             class="text-danger"
-          />
-        </b-button>
-
-        <b-button
-          size="sm"
-          variant="link"
-          :to="{ name: editRoute, params: { [primaryKey]: item[primaryKey] } }"
-        >
-          <font-awesome-icon
-            :icon="['fas', 'pen']"
           />
         </b-button>
       </template>
@@ -252,11 +246,6 @@ export default {
         //   sortable: false,
         //   tdClass: 'w-25',
         // },
-        {
-          key: 'actions',
-          label: '',
-          tdClass: 'text-right',
-        },
       ].map(c => ({
         ...c,
         // Generate column label translation key

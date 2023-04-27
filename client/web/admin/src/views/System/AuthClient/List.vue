@@ -47,10 +47,12 @@
         prevPagination: $t('admin:general.pagination.prev'),
         nextPagination: $t('admin:general.pagination.next'),
       }"
+      clickable
       sticky-header
       hide-search
       class="custom-resource-list-height"
       @search="filterList"
+      @row-clicked="handleRowClicked"
     >
       <template #header>
         <c-resource-list-status-filter
@@ -62,18 +64,6 @@
           :exclusive-label="$t('filterForm.exclusive.label')"
           @change="filterList"
         />
-      </template>
-
-      <template #actions="{ item }">
-        <b-button
-          size="sm"
-          variant="link"
-          :to="{ name: editRoute, params: { [primaryKey]: item[primaryKey] } }"
-        >
-          <font-awesome-icon
-            :icon="['fas', 'pen']"
-          />
-        </b-button>
       </template>
     </c-resource-list>
   </b-container>
@@ -134,10 +124,6 @@ export default {
           key: 'createdAt',
           sortable: true,
           formatter: (v) => moment(v).fromNow(),
-        },
-        {
-          key: 'actions',
-          tdClass: 'text-right',
         },
       ].map(c => ({
         ...c,
