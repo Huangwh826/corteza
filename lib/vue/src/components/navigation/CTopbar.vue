@@ -1,5 +1,5 @@
 <template>
-  <div class="header-navigation d-flex align-items-center sticky-top pr-3">
+  <div class="header-navigation d-flex flex-wrap flex-sm-nowrap align-items-center sticky-top pr-3">
     <div
       class="spacer"
       :class="{
@@ -8,16 +8,16 @@
     />
 
     <h2
-      class="d-sm-inline-block text-truncate title mb-0"
+      class="title pb-2 pb-sm-0 d-sm-inline-block text-truncate order-2 order-sm-0 mb-0"
     >
       <slot name="title" />
     </h2>
 
-    <div class="ml-auto text-sm-nowrap button-wrapper">
+    <div class="tools-wrapper ml-auto text-sm-nowrap order-3 order-sm-0 py-3 py-sm-0">
       <slot name="tools" />
     </div>
 
-    <div class="button-wrapper">
+    <div class="order-1 order-sm-0 ml-auto ml-sm-0">
       <b-button
       v-if="!hideAppSelector && !settings.hideAppSelector"
       variant="outline-light"
@@ -32,7 +32,7 @@
     </b-button>
     </div>
 
-    <div class="button-wrapper">
+    <div class="order-1 order-sm-0">
       <b-dropdown
         v-if="!settings.hideHelp"
         data-test-id="dropdown-helper"
@@ -106,7 +106,7 @@
       </b-dropdown>
     </div>
 
-    <div class="profile-icon">
+    <div class="order-1 order-sm-0 flex-grow-sm-0">
       <b-dropdown
         v-if="!settings.hideProfile"
         data-test-id="dropdown-profile"
@@ -117,7 +117,7 @@
         right
         menu-class="topbar-dropdown-menu border-0 shadow-sm text-dark font-weight-bold mt-2"
         no-caret
-        class="nav-user-icon"
+        class="nav-user-icon mt-2 mt-sm-0"
       >
         <template #button-content>
           <div
@@ -336,38 +336,19 @@ $nav-user-icon-size: 50px;
   }
 }
 
-@media(max-width:576px){
+@media (max-width:576px) {
   .header-navigation {
-    flex-wrap: wrap;
     height: auto;
     padding-left: 1.5rem;
-
-    //Menu and Profile icon stay on top
-    .profile-icon{
-      order: 1;
-      width: 100%;
-    }
-    .nav-user-icon {
-      float: right;
-      margin-top: .5rem;
-    }
-
-    // Title goes on second line on mobile
     .title {
-      order: 2;
-      width: 100%;
-      padding-bottom: 1rem;
-      * {
-        text-overflow: unset;
-        white-space: normal;
-      }
+      flex-basis: 100%;
     }
-
-  // all the rest is on the third line
-    & > .button-wrapper  {
-      order: 3;
-      width: auto;
-      flex-grow: 1;
+  }
+  .tools-wrapper {
+    flex-grow: 1;
+    .vue-portal-target {
+      display: flex;
+      justify-content: end;
     }
   }
 }
