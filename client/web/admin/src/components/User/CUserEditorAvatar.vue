@@ -48,10 +48,8 @@
           :label="$t('initial.color')"
           class="col"
         >
-          <b-form-input
+          <c-input-color-picker
             v-model="user.meta.avatarColor"
-            type="color"
-            data-test-id="input-handle"
           />
         </b-form-group>
 
@@ -59,9 +57,8 @@
           :label="$t('initial.backgroundColor')"
           class="col"
         >
-          <b-form-input
+          <c-input-color-picker
             v-model="user.meta.avatarBgColor"
-            type="color"
           />
         </b-form-group>
       </div>
@@ -81,6 +78,8 @@
 <script>
 import CSubmitButton from 'corteza-webapp-admin/src/components/CSubmitButton'
 import CUploaderWithPreview from 'corteza-webapp-admin/src/components/CUploaderWithPreview'
+import { components } from '@cortezaproject/corteza-vue'
+const { CInputColorPicker } = components
 
 export default {
   name: 'CUserEditorAvatar',
@@ -93,6 +92,7 @@ export default {
   components: {
     CSubmitButton,
     CUploaderWithPreview,
+    CInputColorPicker,
   },
 
   props: {

@@ -130,18 +130,14 @@
                       />
                     </td>
                     <td class="align-middle">
-                      <b-form-input
+                      <c-input-color-picker
                         v-model="item.options.textColor"
-                        type="color"
-                        debounce="300"
                         class="w-100"
                       />
                     </td>
                     <td class="align-middle">
-                      <b-form-input
+                      <c-input-color-picker
                         v-model="item.options.backgroundColor"
-                        type="color"
-                        debounce="300"
                         class="w-100"
                       />
                     </td>
@@ -209,6 +205,8 @@ import Text from './NavTypes/Text.vue'
 import Url from './NavTypes/Url.vue'
 import Compose from './NavTypes/ComposePage.vue'
 import Dropdown from './NavTypes/Dropdown.vue'
+import { components } from '@cortezaproject/corteza-vue'
+const { CInputColorPicker } = components
 
 export default {
   i18nOptions: {
@@ -221,6 +219,7 @@ export default {
     Url,
     Compose,
     Dropdown,
+    CInputColorPicker,
   },
 
   extends: base,
