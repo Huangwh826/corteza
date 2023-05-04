@@ -37,6 +37,10 @@ export class PageBlockIFrame extends PageBlock {
     Apply(this.options, o, String, 'srcField', 'src', 'wrap', 'magnifyOption')
     Apply(this.options, o, Number, 'refreshRate')
     Apply(this.options, o, Boolean, 'showRefresh')
+
+    if (o.src) {
+      this.options.src = this.checkValidURL(o.src)
+    }
   }
 }
 

@@ -89,6 +89,8 @@ export default {
       this.topbar.processing = true
 
       const values = Object.entries(settings).map(([name, value]) => {
+        value.helpLinks.forEach(link => { link.url = this.checkValidURL(link.url) })
+        value.profileLinks.forEach(link => { link.url = this.checkValidURL(link.url) })
         return { name, value }
       })
 
@@ -102,6 +104,13 @@ export default {
         .finally(() => {
           this.topbar.processing = false
         })
+    },
+
+    checkValidURL (url) {
+      if (!/^https?:\/\//i.test(url)) {
+        url = `https://${url}`
+      }
+      return url
     },
   },
 }

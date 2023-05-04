@@ -43,6 +43,10 @@ export class PageBlockSocialFeed extends PageBlock {
     if (o.fields) {
       this.options.fields = o.fields
     }
+
+    if (o.profileUrl) {
+      this.options.profileUrl = this.checkValidURL(o.profileUrl)
+    }
   }
 }
 

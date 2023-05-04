@@ -107,6 +107,14 @@ export class PageBlock {
   clone (): PageBlockInput {
     return { ...JSON.parse(JSON.stringify(this)), blockID: NoID, meta: { tempID: '' } }
   }
+
+  checkValidURL (url: string): string {
+    if (!/^https?:\/\//i.test(url)) {
+      url = `https://${url}`
+    }
+
+    return url
+  }
 }
 
 export const Registry = new Map<string, typeof PageBlock>()

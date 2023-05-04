@@ -1,4 +1,5 @@
 import { Apply } from '../../../../cast'
+import { PageBlock } from '../base';
 
 interface DropdownItem {
   label: string;
@@ -51,12 +52,13 @@ const defOptions = {
   },
 }
 
-export default class NavigationItem {
+export default class NavigationItem extends PageBlock {
   public type = ''
 
   public options: NavigationItemOptions = { ...defOptions }
 
   constructor (i?: NavigationItemInput) {
+    super(i)
     this.apply(i)
   }
 
@@ -67,6 +69,10 @@ export default class NavigationItem {
 
     if (i.options) {
       this.options = { ...this.options, ...i.options }
+    }
+
+    if (i.options?.item.url) {
+      this.options.item.url = this.checkValidURL(i.options.item.url)
     }
   }
 }
