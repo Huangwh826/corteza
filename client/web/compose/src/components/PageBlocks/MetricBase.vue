@@ -20,7 +20,13 @@
         <div
           v-for="(v, i) in formatResponse(m, mi)"
           :key="i"
-          class="w-100 h-100 px-2 py-1"
+          :class="['w-100 h-100 px-2 py-1', m.drillDown.enabled ? 'pointer' : '']"
+          @click="drillDown({
+            name: m.label,
+            filter: m.filter,
+            moduleID: m.moduleID,
+            drillDown: m.drillDown
+          })"
         >
           <!-- <h3 :style="genStyle(m.labelStyle)">
             {{ v.label }}
@@ -40,7 +46,7 @@ import base from './base'
 import numeral from 'numeral'
 import moment from 'moment'
 import MetricItem from './Metric/Item'
-import { NoID } from '@cortezaproject/corteza-js'
+import { NoID, compose } from '@cortezaproject/corteza-js'
 import { evaluatePrefilter } from 'corteza-webapp-compose/src/lib/record-filter'
 
 export default {
@@ -78,6 +84,7 @@ export default {
   mounted () {
     this.$root.$on('metric.update', this.refresh)
     this.$root.$on(`refetch-non-record-blocks:${this.page.pageID}`, this.refresh)
+    this.$root.$on('drill-down-chart', this.drillDown)
   },
 
   beforeDestroy () {
@@ -150,12 +157,58 @@ export default {
         this.processing = false
       }
     },
+    /**
+     *
+     * @param {*} name
+     * Based on drill down configuration, either changes the linked block on the page
+     * or opens it in a modal wit the filter and dimensions from the chart and the clicked value
+     */
+    drillDown ({ name, filter, moduleID, drillDown }) {
+      if (!drillDown.enabled) {
+        return
+      }
 
+      if (drillDown.blockID) {
+        // Use linked record list to display drill down data
+        const { pageID = NoID } = this.page
+        const { recordID = NoID } = this.record || {}
+        // Construct its uniqueID to identify it
+        const recordListUniqueID = [pageID, recordID, drillDown.blockID].map(v => v || NoID).join('-')
+        this.$root.$emit(`drill-down-recordList:${recordListUniqueID}`, filter)
+      } else {
+        // Open in modal
+        const metricID = `${name.replace(/\s+/g, '-').toLowerCase()}-${moduleID}`
+
+        const block = new compose.PageBlockRecordList({
+          title: name,
+          blockID: `drillDown-${metricID}`,
+          options: {
+            moduleID,
+            prefilter: filter,
+            presort: 'createdAt DESC',
+            hideRecordReminderButton: true,
+            hideRecordViewButton: false,
+            hideConfigureFieldsButton: false,
+            hideImportButton: true,
+            selectable: true,
+            allowExport: true,
+            perPage: 14,
+            showTotalCount: true,
+            magnifyOption: 'modal',
+          },
+        })
+        this.$root.$emit('magnify-page-block', { block })
+      }
+    },
   },
 }
 </script>
 <style scoped lang="scss">
 h3 {
   line-height: 1;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
 </style>
