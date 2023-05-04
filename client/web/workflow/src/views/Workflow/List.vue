@@ -26,7 +26,7 @@
       }"
       clickable
       sticky-header
-      class="h-100"
+      class="h-100 workflow-list"
       @search="filterList"
       @row-clicked="handleRowClicked"
     >
@@ -137,15 +137,32 @@
       </template>
 
       <template #actions="{ item: w }">
-        <c-permissions-button
+        <b-dropdown
           v-if="w.canGrant"
-          :tooltip="$t('permissions:resources.automation.workflow.tooltip')"
-          :title="w.meta.name || w.handle || w.workflowID"
-          :target="w.meta.name || w.handle || w.workflowID"
-          :resource="`corteza::automation:workflow/${w.workflowID}`"
-          link
-          class="btn px-2"
-        />
+          variant="outline-light"
+          toggle-class="d-flex align-items-center justify-content-center text-primary border-0 py-2 ml-1"
+          no-caret
+          lazy
+          menu-class="m-0"
+        >
+          <template #button-content>
+            <font-awesome-icon
+              :icon="['fas', 'ellipsis-v']"
+            />
+          </template>
+
+          <b-dropdown-item>
+            <c-permissions-button
+              :tooltip="$t('permissions:resources.automation.workflow.tooltip')"
+              :title="w.meta.name || w.handle || w.workflowID"
+              :target="w.meta.name || w.handle || w.workflowID"
+              :resource="`corteza::automation:workflow/${w.workflowID}`"
+              button-variant="link text-decoration-none text-dark regular-font rounded-0"
+              :button-label="$t('permissions:ui.label')"
+              class="text-dark d-print-none border-0"
+            />
+          </b-dropdown-item>
+        </b-dropdown>
       </template>
     </c-resource-list>
   </b-container>
@@ -308,3 +325,25 @@ export default {
   },
 }
 </script>
+
+<style lang="scss">
+.workflow-list {
+  td:nth-of-type(5) {
+    padding-top: 8px;
+    position: sticky;
+    right: 0;
+    opacity: 0;
+    transition: opacity 0.25s;
+    width: 1%;
+
+    .regular-font {
+      font-family: $font-regular !important;
+    }
+  }
+
+  tr:hover td:nth-of-type(5) {
+    opacity: 1;
+    background-color: $gray-200;
+  }
+}
+</style>

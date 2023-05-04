@@ -26,7 +26,7 @@
       }"
       clickable
       sticky-header
-      class="h-100"
+      class="h-100 chart-list"
       @search="filterList"
       @row-clicked="handleRowClicked"
     >
@@ -91,17 +91,34 @@
       </template>
 
       <template #actions="{ item: c }">
-        <b-button-group>
-          <c-permissions-button
-            v-if="c.canGrant"
-            :title="c.name || c.handle || c.chartID"
-            :target="c.name || c.handle || c.chartID"
-            :resource="`corteza::compose:chart/${namespace.namespaceID}/${c.chartID}`"
-            :tooltip="$t('permissions:resources.compose.chart.tooltip')"
-            button-variant="outline-light"
-            class="text-dark d-print-none border-0"
-          />
-        </b-button-group>
+        <b-dropdown
+          v-if="c.canGrant"
+          variant="outline-light"
+          toggle-class="d-flex align-items-center justify-content-center text-primary border-0 py-2"
+          no-caret
+          dropleft
+          lazy
+          menu-class="m-0"
+        >
+          <template #button-content>
+            <font-awesome-icon
+              :icon="['fas', 'ellipsis-v']"
+            />
+          </template>
+          <b-dropdown-item
+            link-class="p-0"
+            variant="light"
+          >
+            <c-permissions-button
+              :title="c.name || c.handle || c.chartID"
+              :target="c.name || c.handle || c.chartID"
+              :resource="`corteza::compose:chart/${namespace.namespaceID}/${c.chartID}`"
+              :tooltip="$t('permissions:resources.compose.chart.tooltip')"
+              :button-label="$t('permissions:ui.label')"
+              button-variant="link dropdown-item text-decoration-none text-dark regular-font rounded-0"
+            />
+          </b-dropdown-item>
+        </b-dropdown>
       </template>
 
       <template #changedAt="{ item }">
@@ -255,10 +272,31 @@ export default {
   },
 }
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 $input-height: 42px;
 
 .chart-name-input {
   height: $input-height;
 }
+
+.chart-list {
+  td:nth-of-type(4) {
+    padding-top: 8px;
+    position: sticky;
+    right: 0;
+    opacity: 0;
+    transition: opacity 0.25s;
+    width: 1%;
+
+    .regular-font {
+      font-family: $font-regular !important;
+    }
+  }
+
+  tr:hover td:nth-of-type(4) {
+    opacity: 1;
+    background-color: $gray-200;
+  }
+}
+
 </style>

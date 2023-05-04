@@ -45,23 +45,39 @@
       clickable
       sticky-header
       hide-total
-      class="custom-resource-list-height"
+      class="custom-resource-list-height federated-list"
       @row-clicked="handleRowClicked"
       @search="filterList"
     >
       <template #actions="{ item }">
-        <b-button
+        <b-dropdown
           v-if="item.nodeID === item.sharedNodeID && (item.status || '').toLowerCase() === 'pair_requested'"
-          size="sm"
-          variant="link"
-          class="p-0 pr-1"
-          @click="openConfirmPending(item)"
+          variant="outline-light"
+          toggle-class="d-flex align-items-center justify-content-center text-primary border-0 py-2"
+          no-caret
+          dropleft
+          menu-class="m-0"
         >
-          <font-awesome-icon
-            :icon="['fas', 'exclamation-triangle']"
-            class="text-danger"
-          />
-        </b-button>
+          <template #button-content>
+            <font-awesome-icon
+              :icon="['fas', 'ellipsis-v']"
+            />
+          </template>
+
+          <b-dropdown-item>
+            <b-button
+              size="sm"
+              variant="link"
+              class="p-0 pr-1"
+              @click="openConfirmPending(item)"
+            >
+              <font-awesome-icon
+                :icon="['fas', 'exclamation-triangle']"
+                class="text-danger"
+              />
+            </b-button>
+          </b-dropdown-item>
+        </b-dropdown>
       </template>
     </c-resource-list>
 
@@ -246,6 +262,11 @@ export default {
         //   sortable: false,
         //   tdClass: 'w-25',
         // },
+        {
+          key: 'actions',
+          label: '',
+          tdClass: 'text-right',
+        },
       ].map(c => ({
         ...c,
         // Generate column label translation key
@@ -333,5 +354,25 @@ export default {
 <style lang="scss">
 .pointer {
   cursor: pointer;
+}
+
+.federated-list {
+  td:nth-of-type(4) {
+    padding-top: 8px;
+    position: sticky;
+    right: 0;
+    opacity: 0;
+    transition: opacity 0.25s;
+    width: 1%;
+
+    .regular-font {
+      font-family: $font-regular !important;
+    }
+  }
+
+  tr:hover td:nth-of-type(4) {
+    opacity: 1;
+    background-color: $gray-200;
+  }
 }
 </style>

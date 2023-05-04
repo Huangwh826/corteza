@@ -26,7 +26,7 @@
       }"
       sticky-header
       clickable
-      class="h-100"
+      class="h-100 reporter-list"
       @search="filterList"
       @row-clicked="viewReport"
     >
@@ -43,6 +43,7 @@
             >
               {{ $t('report.new') }}
             </b-button>
+
             <c-permissions-button
               v-if="canGrant"
               resource="corteza::system:report/*"
@@ -71,23 +72,48 @@
         >
           {{ $t('report.builder') }}
         </b-button>
-        <b-button
-          v-if="r.canUpdateReport"
-          variant="link"
-          class="mr-2"
-          :to="{ name: 'report.edit', params: { reportID: r.reportID } }"
+      </template>
+
+      <template #moreActions="{ item: r }">
+        <b-dropdown
+          variant="outline-light"
+          toggle-class="d-flex align-items-center justify-content-center text-primary border-0 py-2"
+          no-caret
+          lazy
+          menu-class="m-0"
         >
-          {{ $t('report.edit') }}
-        </b-button>
-        <c-permissions-button
-          v-if="r.canGrant"
-          :tooltip="$t('permissions:resources.system.report.tooltip')"
-          :title="r.meta.name || r.handle || r.reportID"
-          :target="r.meta.name || r.handle || r.reportID"
-          :resource="`corteza::system:report/${r.reportID}`"
-          class="btn px-2"
-          link
-        />
+          <template #button-content>
+            <font-awesome-icon
+              :icon="['fas', 'ellipsis-v']"
+            />
+          </template>
+
+          <b-dropdown-item
+            v-if="r.canUpdateReport"
+          >
+            <b-button
+              variant="link"
+              class="mr-2 text-decoration-none"
+              :to="{ name: 'report.edit', params: { reportID: r.reportID } }"
+            >
+              {{ $t('report.edit') }}
+            </b-button>
+          </b-dropdown-item>
+
+          <b-dropdown-item
+            v-if="r.canGrant"
+          >
+            <c-permissions-button
+              :tooltip="$t('permissions:resources.system.report.tooltip')"
+              :title="r.meta.name || r.handle || r.reportID"
+              :target="r.meta.name || r.handle || r.reportID"
+              :resource="`corteza::system:report/${r.reportID}`"
+              class="text-dark d-print-none border-0"
+              :button-label="$t('permissions:ui.label')"
+              button-variant="link text-decoration-none text-dark regular-font rounded-0"
+            />
+          </b-dropdown-item>
+        </b-dropdown>
       </template>
     </c-resource-list>
   </b-container>
@@ -166,6 +192,11 @@ export default {
           label: '',
           tdClass: 'text-right text-nowrap',
         },
+        {
+          key: 'moreActions',
+          label: '',
+          tdClass: 'text-right text-nowrap',
+        },
       ]
     },
   },
@@ -190,3 +221,25 @@ export default {
   },
 }
 </script>
+
+<style lang="scss">
+.reporter-list {
+  td:nth-of-type(5) {
+    padding-top: 8px;
+    position: sticky;
+    right: 0;
+    opacity: 0;
+    transition: opacity 0.25s;
+    width: 1%;
+
+    .regular-font {
+      font-family: $font-regular !important;
+    }
+  }
+
+  tr:hover td:nth-of-type(5) {
+    opacity: 1;
+    background-color: $gray-200;
+  }
+}
+</style>

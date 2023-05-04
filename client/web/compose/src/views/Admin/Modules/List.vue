@@ -27,7 +27,7 @@
       }"
       clickable
       sticky-header
-      class="h-100"
+      class="h-100 module-list"
       @search="filterList"
       @row-clicked="handleRowClicked"
     >
@@ -110,33 +110,56 @@
           :namespace="namespace"
           :module="m"
           size="sm"
+          boundary="scrollParent"
         />
 
-        <b-button-group
-          class="ml-2"
+        <b-dropdown
+          variant="outline-light"
+          toggle-class="d-flex align-items-center justify-content-center text-primary border-0 py-2 ml-1"
+          no-caret
+          lazy
+          menu-class="m-0"
         >
-          <b-button
-            data-test-id="button-all-records"
-            variant="outline-light"
-            :title="$t('allRecords.label')"
-            :to="{name: 'admin.modules.record.list', params: { moduleID: m.moduleID }}"
-            class="text-primary d-print-none border-0"
-          >
+          <template #button-content>
             <font-awesome-icon
-              :icon="['fas', 'columns']"
+              :icon="['fas', 'ellipsis-v']"
             />
-          </b-button>
+          </template>
 
-          <c-permissions-button
+          <b-dropdown-item
+            link-class="p-0"
+            variant="light"
+          >
+            <b-button
+              data-test-id="button-all-records"
+              variant="outline-light"
+              :title="$t('allRecords.label')"
+              :to="{name: 'admin.modules.record.list', params: { moduleID: m.moduleID }}"
+              class="text-primary d-print-none border-0"
+            >
+              <font-awesome-icon
+                :icon="['fas', 'columns']"
+              />
+              {{ $t('allRecords.label') }}
+            </b-button>
+          </b-dropdown-item>
+
+          <b-dropdown-item
             v-if="m.canGrant"
-            :title="m.name || m.handle || m.moduleID"
-            :target="m.name || m.handle || m.moduleID"
-            :resource="`corteza::compose:module/${m.namespaceID}/${m.moduleID}`"
-            :tooltip="$t('permissions:resources.compose.module.tooltip')"
-            button-variant="outline-light"
-            class="text-dark d-print-none border-0"
-          />
-        </b-button-group>
+            link-class="p-0"
+            variant="light"
+          >
+            <c-permissions-button
+              :title="m.name || m.handle || m.moduleID"
+              :target="m.name || m.handle || m.moduleID"
+              :resource="`corteza::compose:module/${m.namespaceID}/${m.moduleID}`"
+              :tooltip="$t('permissions:resources.compose.module.tooltip')"
+              :button-label="$t('permissions:ui.label')"
+              button-variant="link text-decoration-none text-dark regular-font rounded-0"
+              class="text-dark d-print-none border-0"
+            />
+          </b-dropdown-item>
+        </b-dropdown>
       </template>
 
       <template #name="{ item: m }">
@@ -299,6 +322,26 @@ export default {
 .permissions-dropdown {
   .dropdown-item {
     padding: 0;
+  }
+}
+
+.module-list {
+  td:nth-of-type(4) {
+    padding-top: 8px;
+    position: sticky;
+    right: 0;
+    opacity: 0;
+    transition: opacity 0.25s;
+    width: 1%;
+
+    .regular-font {
+      font-family: $font-regular !important;
+    }
+  }
+
+  tr:hover td:nth-of-type(4) {
+    opacity: 1;
+    background-color: $gray-200;
   }
 }
 </style>
