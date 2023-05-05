@@ -20,7 +20,8 @@
         <div
           v-for="(v, i) in formatResponse(m, mi)"
           :key="i"
-          :class="['w-100 h-100 px-2 py-1', m.drillDown.enabled ? 'pointer' : '']"
+          class="w-100 h-100 px-2 py-1"
+          :class="m.drillDown.enabled ? 'pointer' : ''"
           @click="drillDown(m, mi)"
         >
           <!-- <h3 :style="genStyle(m.labelStyle)">
