@@ -21,12 +21,7 @@
           v-for="(v, i) in formatResponse(m, mi)"
           :key="i"
           :class="['w-100 h-100 px-2 py-1', m.drillDown.enabled ? 'pointer' : '']"
-          @click="drillDown({
-            name: m.label,
-            filter: m.filter,
-            moduleID: m.moduleID,
-            drillDown: m.drillDown
-          })"
+          @click="drillDown(m, mi)"
         >
           <!-- <h3 :style="genStyle(m.labelStyle)">
             {{ v.label }}
@@ -163,7 +158,7 @@ export default {
      * Based on drill down configuration, either changes the linked block on the page
      * or opens it in a modal wit the filter and dimensions from the chart and the clicked value
      */
-    drillDown ({ name, filter, moduleID, drillDown }) {
+    drillDown ({ label: name, filter, moduleID, drillDown }, metricIndex) {
       if (!drillDown.enabled) {
         return
       }
@@ -177,7 +172,7 @@ export default {
         this.$root.$emit(`drill-down-recordList:${recordListUniqueID}`, filter)
       } else {
         // Open in modal
-        const metricID = `${name.replace(/\s+/g, '-').toLowerCase()}-${moduleID}`
+        const metricID = `${this.block.blockID}-${name.replace(/\s+/g, '-').toLowerCase()}-${moduleID}-${metricIndex}`
 
         const block = new compose.PageBlockRecordList({
           title: name,
@@ -206,9 +201,5 @@ export default {
 <style scoped lang="scss">
 h3 {
   line-height: 1;
-}
-
-.cursor-pointer {
-  cursor: pointer;
 }
 </style>
