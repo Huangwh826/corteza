@@ -181,7 +181,7 @@ export default {
           options: {
             moduleID,
             prefilter: filter,
-            presort: 'createdAt DESC',
+            presort: '',
             hideRecordReminderButton: true,
             hideRecordViewButton: false,
             hideConfigureFieldsButton: false,
