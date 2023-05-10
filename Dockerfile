@@ -1,7 +1,7 @@
 # build-stage
 FROM alpine:3 as build-stage
 
-# use docker build --build-arg VERSION=2021.9.0 .
+# use docker build --build-arg VERSION=2023.3.0-rc.3
 ARG VERSION=2023.3.0-rc.3
 ARG SERVER_VERSION=${VERSION}
 ARG WEBAPP_VERSION=${VERSION}
